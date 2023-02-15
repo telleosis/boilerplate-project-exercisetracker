@@ -22,7 +22,7 @@ const mySecret = process.env["MONGO_URI"];
 Mongoose.connect(mySecret, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  serverSelectionTimeoutMS: 30000, // Timeout after 30s
 });
 
 const connection = Mongoose.connection;
@@ -36,6 +36,7 @@ const Schema = Mongoose.Schema;
 const usersSchema = new Schema({
   username: String,
 });
+
 const exerciseSchema = new Schema({
   id: String,
   description: String,
@@ -82,71 +83,6 @@ app.post("/api/users", async (req, res) => {
     res.status(500).json("Database Server erorr...");
   }
 });
-
-//GET data from /api/users
-app.get("/api/users", async (req, res) => {
-  //Return an array of all usernames and IDs
-  let usersArray = [];
-  try {
-    const findUsers = (username, _id, done) => {
-      Users.find({ username: username }, { _id: _id }, function (err, data) {
-        if (err) return console.error(err);
-        usersArray.push(data);
-        done(null, data);
-      });
-    };
-  } catch (error) {
-    console.log(error);
-    res.status(500).json("Server error");
-  }
-});
-
-// app.post('/api/users/:_id/exercises', async (req, res) => {
-//   //collect form data
-//   const fdId = req.body._id;
-//   const fdDesc = req.body.description;
-//   const fdDura = req.body.duration;
-//   const fdDate = req.body.date;
-
-//   console.log('Form Data Username collected :', fdId,fdDesc,fdDura,fdDate);
-
-//   //post it to mongodb
-//    try {
-//       // check if user already exist in the database
-//       let findOne = await Exercises.findOne({
-//         id: fdId
-//       })
-//       if (findOne) {
-//         res.json({
-//           username: findOne.username,
-//           description: findOne.description,
-//           duration: findOne.duration,
-//           date: findOne.date,
-//           _id: findOne._id
-//         })
-//       } else {
-//         // if it does not exist yet then create new one and response with the result
-//         findOne = new Exercises({
-//           username: username,
-//           description: description,
-//           duration: duration,
-//           date: date,
-//           _id: _id
-//         })
-//         await findOne.save()
-//         res.json({
-//           username: findOne.username,
-//           description: findOne.description,
-//           duration: findOne.duration,
-//           date: findOne.date,
-//           _id: findOne._id
-//         })
-//       }
-//     } catch (err) {
-//       console.error(err)
-//       res.status(500).json('Database Server erorr...')
-//     }
-// });
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
