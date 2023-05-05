@@ -88,6 +88,7 @@ app.get("/api/users", (req, res) => {
 app.post("/api/users/:_id/exercises", async (req, res) => {
   const id = req.params._id;
   const { description, duration, date } = req.body;
+  //const { description, duration, date } = JSON.parse(JSON.stringify(req.body));
 
   await User.findById(id, (err, userData) => {
     if (err || !userData) {
@@ -118,9 +119,9 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
 });
 
 //Create GET /api/users/:_id/logs endpoint to retrieve a full exercise log of any user
-app.get("/api/users/:_id/logs?", async (req, res) => {
+app.get("/api/users/:_id/logs", async (req, res) => {
   const { from, to, limit } = req.query;
-  const { description, duration, date } = req.body || {};
+  const { description, duration, date } = req.body;
   const id = req.params._id;
 
   try {
